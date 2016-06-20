@@ -2,6 +2,10 @@ package charlie.mirror.client;
 
 import java.net.URI;
 
+/**
+ * A tool class to handle mojang stuff.
+ * @author Charlie Jiang
+ */
 public class MojangMirror {
     private static final URI VERSION_ROOT = URI.create("https://launcher.mojang.com/mc/game/");
     private static final URI LIBRARIES_ROOT = URI.create("https://libraries.minecraft.net/");

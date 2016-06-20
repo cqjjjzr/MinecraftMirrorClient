@@ -2,6 +2,10 @@ package charlie.mirror.client;
 
 import java.net.URI;
 
+/**
+ * A class to store mirror information.
+ * @author Charlie Jiang
+ */
 public class MirrorInformation {
     private String name;
 
