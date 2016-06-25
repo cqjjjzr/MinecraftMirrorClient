@@ -13,11 +13,11 @@ public class ConfigManager {
     }
 
     public int getReadTimeout(){
-        return preferences.getInt("ReadTimeOut", 7000);
+        return preferences.getInt("ReadTimeOut", 1000000);
     }
 
     public int getConnectTimeout(){
-        return preferences.getInt("ConnectTimeOut", 7000);
+        return preferences.getInt("ConnectTimeOut", 1000000);
     }
 
     public String getUserAgent(){

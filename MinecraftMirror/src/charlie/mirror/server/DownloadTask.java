@@ -3,7 +3,6 @@ package charlie.mirror.server;
 import javax.net.ssl.HttpsURLConnection;
 import java.io.File;
 import java.io.FileOutputStream;
-import java.io.IOException;
 import java.io.InputStream;
 import java.net.HttpURLConnection;
 import java.net.URL;
@@ -20,7 +19,7 @@ public class DownloadTask implements Runnable{
         this.status = Status.IN_QUEUE;
         this.message = "Waiting for queue.";
         this.path = path;
-        this.path.mkdirs();
+        this.path.getParentFile().mkdirs();
     }
 
     @Override
@@ -42,10 +41,10 @@ public class DownloadTask implements Runnable{
                 if(!path.exists()){
                     FileOutputStream fileOutputStream = new FileOutputStream(path);
                     InputStream inputStream = connection.getInputStream();
-                    int readLength = 0;
+                    int readLength;
                     int process = 0;
                     byte[] buffer = new byte[1024];
-                    while((readLength = inputStream.read(buffer)) != 0){
+                    while((readLength = inputStream.read(buffer)) != -1){
                         fileOutputStream.write(buffer, 0, readLength);
                         process += readLength;
                         this.message = "Downloading, downloaded " + readLength + "B of " + length + "B. " + ((double) readLength) / length * 100 + "%";
@@ -59,6 +58,7 @@ public class DownloadTask implements Runnable{
                     }
                     this.message = "Completed.";
                     this.status = Status.COMPLETED;
+                    MinecraftMirror.logger.info("Downloaded " + url.toString());
                 }else{
                     this.message = "File already existed. Download stopped.";
                     this.status = Status.COMPLETED;
@@ -67,9 +67,10 @@ public class DownloadTask implements Runnable{
                 status = Status.ERROR;
                 message = "Bad response code:" + code;
             }
-        } catch (IOException e) {
+        } catch (Exception e) {
             status = Status.ERROR;
-            MinecraftMirror.logger.throwing("charlie.mirror.server.DownloadTask", "run", e);
+            MinecraftMirror.logger.warning("Downloading exception:" + e.getClass().toString() + " " + e.getMessage());
+            //e.printStackTrace();
             this.message = "Error:" + e.toString();
         }
     }
