@@ -22,5 +22,6 @@ public class MinecraftMirror {
         downloadPool = Executors.newFixedThreadPool(configManager.getMaxQueue());
         processPool = Executors.newCachedThreadPool();
         new MojangClient().update();
+        processPool.submit(new Checker());
     }
 }
