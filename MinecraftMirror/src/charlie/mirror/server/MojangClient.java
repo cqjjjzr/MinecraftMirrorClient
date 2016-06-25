@@ -34,7 +34,6 @@ public class MojangClient {
                     FutureTask<Void> thread = new FutureTask<>(task, null);
                     MinecraftMirror.downloadPool.submit(thread);
                     MinecraftMirror.processPool.submit(new MojangVersion(task, thread));
-                    MinecraftMirror.logger.info("Added task " + url);
                 }
             }
         } catch (Exception e) {
