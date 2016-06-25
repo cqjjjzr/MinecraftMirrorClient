@@ -41,29 +41,40 @@ public class MojangVersion implements Runnable {
                     JSONObject classifiersObj = downloadsObj.getJSONObject("classifiers");
                     boolean flag = true;
                     if(classifiersObj.toString().contains("natives-windows-32")){
-                        startTask(classifiersObj.getJSONObject("natives-windows-32").getString("url"));
+                        startLibTask(classifiersObj.getJSONObject("natives-windows-32").getString("url"));
                         flag = false;
                     }
                     if(classifiersObj.toString().contains("natives-windows-64")){
-                        startTask(classifiersObj.getJSONObject("natives-windows-64").getString("url"));
+                        startLibTask(classifiersObj.getJSONObject("natives-windows-64").getString("url"));
                         flag = false;
                     }
                     if (classifiersObj.toString().contains("natives-linux")) {
-                        startTask(classifiersObj.getJSONObject("natives-linux").getString("url"));
+                        startLibTask(classifiersObj.getJSONObject("natives-linux").getString("url"));
                     }
                     if (classifiersObj.toString().contains("natives-windows") && flag) {
-                        startTask(classifiersObj.getJSONObject("natives-windows").getString("url"));
+                        startLibTask(classifiersObj.getJSONObject("natives-windows").getString("url"));
                     }
                     if (classifiersObj.toString().contains("natives-osx")) {
-                        startTask(classifiersObj.getJSONObject("natives-osx").getString("url"));
+                        startLibTask(classifiersObj.getJSONObject("natives-osx").getString("url"));
                     }
                 }
                 if (downloadsObj.toString().contains("artifact")) {
                     {
                         JSONObject artifactObj = downloadsObj.getJSONObject("artifact");
-                        startTask(artifactObj.getString("url"));
+                        startLibTask(artifactObj.getString("url"));
                     }
                 }
+            }
+
+            JSONObject downloadsObj  = rootObj.getJSONObject("downloads");
+            if (downloadsObj.toString().contains("client")) {
+                startVerTask(downloadsObj.getJSONObject("client").getString("url"));
+            }
+            if (downloadsObj.toString().contains("server")) {
+                startVerTask(downloadsObj.getJSONObject("server").getString("url"));
+            }
+            if (downloadsObj.toString().contains("windows-server")) {
+                startVerTask(downloadsObj.getJSONObject("windows-server").getString("url"));
             }
         }catch (Exception e){
             MinecraftMirror.logger.warning("Mojang precess exception:" + e.getClass().toString()  + " " + e.getMessage());
@@ -71,10 +82,19 @@ public class MojangVersion implements Runnable {
         }
     }
 
-    private void startTask(String u) throws IOException, URISyntaxException {
+    private void startLibTask(String u) throws IOException, URISyntaxException {
         URL url = new URL(u);
         if(!queue.containsKey(url)){
-            DownloadTask task = new DownloadTask(url, Paths.get(configManager.getHttpRoot(), "mc", "libraries", LIBRARIES_ROOT.relativize(url.toURI()).toString()).toFile());
+            DownloadTask task = new DownloadTask(url, Paths.get(configManager.getHttpRoot(), "mc", "libraries", LIBRARIES_ROOT.relativize(url.toURI()).toString()).toFile(), "lib");
+            queue.put(url, task);
+            downloadPool.submit(task);
+        }
+    }
+
+    private void startVerTask(String u) throws IOException, URISyntaxException {
+        URL url = new URL(u);
+        if(!queue.containsKey(url)){
+            DownloadTask task = new DownloadTask(url, Paths.get(configManager.getHttpRoot(), "mc", "game", VERSION_ROOT.relativize(url.toURI()).toString()).toFile(), "ver");
             queue.put(url, task);
             downloadPool.submit(task);
         }

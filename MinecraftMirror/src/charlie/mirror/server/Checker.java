@@ -1,5 +1,9 @@
 package charlie.mirror.server;
 
+import java.util.concurrent.FutureTask;
+
+import static charlie.mirror.server.MinecraftMirror.queue;
+
 public class Checker implements Runnable {
     @Override
     public void run() {
@@ -8,7 +12,23 @@ public class Checker implements Runnable {
                 Thread.sleep(10000);
             } catch (InterruptedException e) {}
             for(DownloadTask task : MinecraftMirror.queue.values()){
-                if(task.getStatus() != DownloadTask.Status.COMPLETED)
+                if(task.getStatus() == DownloadTask.Status.ERROR){
+                    MinecraftMirror.queue.remove(task.getUrl());
+                    switch (task.getTag()){
+                        case "mv":
+                            queue.put(task.getUrl(), task);
+                            FutureTask<Void> thread = new FutureTask<>(task, null);
+                            MinecraftMirror.downloadPool.submit(thread);
+                            MinecraftMirror.processPool.submit(new MojangVersion(task, thread));
+                            MinecraftMirror.logger.info("Retry task " + task.getUrl().toString());
+                            break;
+                        default:
+                            queue.put(task.getUrl(), task);
+                            MinecraftMirror.downloadPool.submit(task);
+                            MinecraftMirror.logger.info("Retry task " + task.getUrl().toString());
+                    }
+                }
+                if(task.getStatus() != DownloadTask.Status.COMPLETED && task.getStatus() != DownloadTask.Status.ERROR)
                     continue outside;
                 MinecraftMirror.logger.info("All updated.");
             }

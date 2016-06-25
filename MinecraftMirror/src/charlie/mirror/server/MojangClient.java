@@ -16,7 +16,7 @@ public class MojangClient {
 
     public void update(){
         try {
-            DownloadTask versionManifest = new DownloadTask(new URL("https://launchermeta.mojang.com/mc/game/version_manifest.json"), Paths.get(MinecraftMirror.configManager.getHttpRoot(), "intlfile", "version_manifest.json").toFile());
+            DownloadTask versionManifest = new DownloadTask(new URL("https://launchermeta.mojang.com/mc/game/version_manifest.json"), Paths.get(MinecraftMirror.configManager.getHttpRoot(), "intlfile", "version_manifest.json").toFile(), "manifest");
             FutureTask<Void> verTask = new FutureTask<>(versionManifest, null);
             MinecraftMirror.downloadPool.submit(verTask); //Don't add to queue
             while(!verTask.isDone()) ;
@@ -29,7 +29,7 @@ public class MojangClient {
                 JSONObject obj = versions.getJSONObject(i);
                 URL url = new URL(obj.getString("url"));
                 if(!queue.containsKey(url)){
-                    DownloadTask task = new DownloadTask(url, Paths.get(MinecraftMirror.configManager.getHttpRoot(), "intlfile", obj.getString("id") + ".json").toFile());
+                    DownloadTask task = new DownloadTask(url, Paths.get(MinecraftMirror.configManager.getHttpRoot(), "intlfile", obj.getString("id") + ".json").toFile(), "mv");
                     queue.put(url, task);
                     FutureTask<Void> thread = new FutureTask<>(task, null);
                     MinecraftMirror.downloadPool.submit(thread);

@@ -13,13 +13,15 @@ public class DownloadTask implements Runnable{
     private Status status;
     private String message;
     private File path;
+    private String tag;
 
-    public DownloadTask(URL url, File path){
+    public DownloadTask(URL url, File path, String tag){
         this.url = url;
         this.status = Status.IN_QUEUE;
         this.message = "Waiting for queue.";
         this.path = path;
         this.path.getParentFile().mkdirs();
+        this.tag = tag;
     }
 
     @Override
@@ -93,5 +95,9 @@ public class DownloadTask implements Runnable{
 
     public File getPath() {
         return path;
+    }
+
+    public String getTag() {
+        return tag;
     }
 }
