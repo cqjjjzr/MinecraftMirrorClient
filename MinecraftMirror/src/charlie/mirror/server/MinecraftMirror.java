@@ -24,4 +24,22 @@ public class MinecraftMirror {
         new MojangClient().update();
         processPool.submit(new Checker());
     }
+
+    private class MojangInv implements Runnable {
+        private MojangClient client;
+
+        public MojangInv(MojangClient client){
+            this.client = client;
+        }
+
+        @Override
+        public void run() {
+            while(true){
+                client.update();
+                try {
+                    Thread.sleep(MinecraftMirror.configManager.getIntervalHour() * 1000 * 60 * 60);
+                } catch (InterruptedException e) {}
+            }
+        }
+    }
 }

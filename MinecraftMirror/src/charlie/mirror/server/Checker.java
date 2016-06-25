@@ -22,16 +22,23 @@ public class Checker implements Runnable {
                             MinecraftMirror.processPool.submit(new MojangVersion(task, thread));
                             MinecraftMirror.logger.info("Retry task " + task.getUrl().toString());
                             break;
+                        case "ma":
+                            queue.put(task.getUrl(), task);
+                            MinecraftMirror.downloadPool.submit(task);
+                            MinecraftMirror.processPool.submit(new MojangAssets(task.getUrl()));
+                            MinecraftMirror.logger.info("Retry task " + task.getUrl().toString());
                         default:
                             queue.put(task.getUrl(), task);
                             MinecraftMirror.downloadPool.submit(task);
                             MinecraftMirror.logger.info("Retry task " + task.getUrl().toString());
                     }
                 }
-                if(task.getStatus() != DownloadTask.Status.COMPLETED && task.getStatus() != DownloadTask.Status.ERROR)
+                if(task.getStatus() != DownloadTask.Status.COMPLETED && task.getStatus() != DownloadTask.Status.ERROR){
+                    queue.remove(task.getUrl());
                     continue outside;
-                MinecraftMirror.logger.info("All updated.");
+                }
             }
+            MinecraftMirror.logger.info("All updated.");
         }
     }
 }

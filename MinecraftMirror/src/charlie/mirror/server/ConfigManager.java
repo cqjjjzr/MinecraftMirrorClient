@@ -27,4 +27,8 @@ public class ConfigManager {
     public int getMaxQueue(){
         return preferences.getInt("MaxQueue", 50);
     }
+
+    public int getIntervalHour(){
+        return preferences.getInt("IntervalHour", 1);
+    }
 }

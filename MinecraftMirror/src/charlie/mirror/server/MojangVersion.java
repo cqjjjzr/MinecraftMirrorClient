@@ -76,6 +76,9 @@ public class MojangVersion implements Runnable {
             if (downloadsObj.toString().contains("windows-server")) {
                 startVerTask(downloadsObj.getJSONObject("windows-server").getString("url"));
             }
+
+            MojangAssets mojangAssets = new MojangAssets(rootObj);
+            processPool.submit(mojangAssets);
         }catch (Exception e){
             MinecraftMirror.logger.warning("Mojang precess exception:" + e.getClass().toString()  + " " + e.getMessage());
             //e.printStackTrace();
