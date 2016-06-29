@@ -14,6 +14,7 @@ public class DownloadTask implements Runnable{
     private String message;
     private File path;
     private String tag;
+    private boolean override;
 
     public DownloadTask(URL url, File path, String tag){
         this.url = url;
@@ -22,6 +23,17 @@ public class DownloadTask implements Runnable{
         this.path = path;
         this.path.getParentFile().mkdirs();
         this.tag = tag;
+        this.override = false;
+    }
+
+    public DownloadTask(URL url, File path, String tag, boolean override){
+        this.url = url;
+        this.status = Status.IN_QUEUE;
+        this.message = "Waiting for queue.";
+        this.path = path;
+        this.path.getParentFile().mkdirs();
+        this.tag = tag;
+        this.override = override;
     }
 
     @Override
@@ -40,7 +52,7 @@ public class DownloadTask implements Runnable{
             if(code == 200){
                 int length = connection.getContentLength();
                 this.message = "Connect established. ContentLength:" + length + ". Start downloading...";
-                if(!path.exists()){
+                if(!path.exists() || override){
                     FileOutputStream fileOutputStream = new FileOutputStream(path);
                     InputStream inputStream = connection.getInputStream();
                     int readLength;

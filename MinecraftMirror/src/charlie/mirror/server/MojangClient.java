@@ -16,7 +16,7 @@ public class MojangClient {
 
     public void update(){
         try {
-            DownloadTask versionManifest = new DownloadTask(new URL("https://launchermeta.mojang.com/mc/game/version_manifest.json"), Paths.get(MinecraftMirror.configManager.getHttpRoot(), "intlfile", "version_manifest.json").toFile(), "manifest");
+            DownloadTask versionManifest = new DownloadTask(new URL("https://launchermeta.mojang.com/mc/game/version_manifest.json"), Paths.get(MinecraftMirror.configManager.getHttpRoot(), "intlfile", "version_manifest.json").toFile(), "manifest", true);
             FutureTask<Void> verTask = new FutureTask<>(versionManifest, null);
             MinecraftMirror.downloadPool.submit(verTask); //Don't add to queue
             while(!verTask.isDone()) ;
