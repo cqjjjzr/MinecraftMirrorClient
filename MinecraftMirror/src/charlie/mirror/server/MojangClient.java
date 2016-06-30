@@ -29,7 +29,7 @@ public class MojangClient {
                 JSONObject obj = versions.getJSONObject(i);
                 URL url = new URL(obj.getString("url"));
                 if(!queue.containsKey(url)){
-                    DownloadTask task = new DownloadTask(url, Paths.get(MinecraftMirror.configManager.getHttpRoot(), "intlfile", obj.getString("id") + ".json").toFile(), "mv");
+                    DownloadTask task = new DownloadTask(url, Paths.get(MinecraftMirror.configManager.getHttpRoot(), "intlfile", obj.getString("id") + ".json").toFile(), "mv", true);
                     queue.put(url, task);
                     FutureTask<Void> thread = new FutureTask<>(task, null);
                     MinecraftMirror.downloadPool.submit(thread);

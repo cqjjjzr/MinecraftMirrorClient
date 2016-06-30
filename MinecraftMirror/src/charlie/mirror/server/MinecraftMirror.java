@@ -1,7 +1,7 @@
 package charlie.mirror.server;
 
 import java.net.URL;
-import java.util.LinkedHashMap;
+import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import java.util.logging.Logger;
@@ -13,7 +13,8 @@ public class MinecraftMirror {
     protected static Logger logger;
     protected static ExecutorService downloadPool;
     protected static ExecutorService processPool;
-    protected static LinkedHashMap<URL, DownloadTask> queue = new LinkedHashMap<>();
+    protected static ConcurrentHashMap<URL, DownloadTask> queue = new ConcurrentHashMap<>();
+    //protected static Hashtable<URL, DownloadTask> queue = new Hashtable<>();
 
     public static void main(String[] args) {
         configManager = new ConfigManager();
@@ -21,25 +22,7 @@ public class MinecraftMirror {
         logger = Logger.getGlobal();
         downloadPool = Executors.newFixedThreadPool(configManager.getMaxQueue());
         processPool = Executors.newCachedThreadPool();
-        new MojangClient().update();
-        processPool.submit(new Checker());
-    }
-
-    private class MojangInv implements Runnable {
-        private MojangClient client;
-
-        public MojangInv(MojangClient client){
-            this.client = client;
-        }
-
-        @Override
-        public void run() {
-            while(true){
-                client.update();
-                try {
-                    Thread.sleep(MinecraftMirror.configManager.getIntervalHour() * 1000 * 60 * 60);
-                } catch (InterruptedException e) {}
-            }
-        }
+        GUI.show();
+        processPool.execute(new Checker());
     }
 }

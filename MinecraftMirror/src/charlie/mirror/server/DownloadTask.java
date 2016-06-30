@@ -38,6 +38,7 @@ public class DownloadTask implements Runnable{
 
     @Override
     public void run() {
+        //System.out.println("StartTask");
         this.status = Status.DOWNLOADING;
         this.message = "Try to establish connection to server";
         try {
@@ -61,7 +62,7 @@ public class DownloadTask implements Runnable{
                     while((readLength = inputStream.read(buffer)) != -1){
                         fileOutputStream.write(buffer, 0, readLength);
                         process += readLength;
-                        this.message = "Downloading, downloaded " + readLength + "B of " + length + "B. " + ((double) readLength) / length * 100 + "%";
+                        this.message = "Downloading, downloaded " + process + "B of " + length + "B. " + ((double) readLength) / length * 100 + "%";
                     }
                     fileOutputStream.close();
                     inputStream.close();
@@ -76,6 +77,7 @@ public class DownloadTask implements Runnable{
                 }else{
                     this.message = "File already existed. Download stopped.";
                     this.status = Status.COMPLETED;
+
                 }
             }else{
                 status = Status.ERROR;
