@@ -67,6 +67,9 @@ public class DownloadTask implements Runnable{
                     if(path.exists())
                         FileUtils.forceDelete(path);
                     FileUtils.writeByteArrayToFile(path, fileContent);
+                    this.message = "Completed.";
+                    this.status = DownloadTask.Status.COMPLETED;
+                    MinecraftMirror.logger.info("Downloaded " + url.toString());
                 }
             }
         } catch (Exception e) {
@@ -101,7 +104,7 @@ public class DownloadTask implements Runnable{
             while((readLength = inputStream.read(buffer)) != -1){
                 outputStream.write(buffer, 0, readLength);
                 process += readLength;
-                this.message = "Downloading, downloaded " + process + "B of " + length + "B. " + (((double) readLength) / length) * 100 + "%";
+                this.message = "Downloading, downloaded " + process + "B of " + length + "B. " + (((double) process) / length) * 100 + "%";
             }
             inputStream.close();
             connection.disconnect();
