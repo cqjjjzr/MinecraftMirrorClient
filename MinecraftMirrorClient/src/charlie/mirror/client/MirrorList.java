@@ -30,7 +30,7 @@ public class MirrorList implements Iterable<MirrorInformation> {
         for (int i = 0; i < array.length(); i++) {
             JSONObject obj = array.getJSONObject(i);
             switch (obj.getString("name")){
-                case "versionURL":information.setVersionURL(URI.create(obj.getString("rootURL"))); break;
+                case "versionsURL":information.setVersionURL(URI.create(obj.getString("rootURL"))); break;
                 case "librariesURL":information.setLibrariesURL(URI.create(obj.getString("rootURL"))); break;
                 case "assetsURL":information.setAssetsURL(URI.create(obj.getString("rootURL")));
             }
@@ -67,6 +67,10 @@ public class MirrorList implements Iterable<MirrorInformation> {
             if(mirror.getName().equals(name)) return mirror;
         }
         return null;
+    }
+
+    public MirrorInformation elementAt(int pos){
+        return mirrors.get(pos);
     }
 
     @Override

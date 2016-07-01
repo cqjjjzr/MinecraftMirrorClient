@@ -23,7 +23,7 @@ public class MojangClient {
      */
     public String getVersion(String offcialURL){
         for(MirrorInformation information : list){
-            if(information.getVersionURL() != null && errorMirror.contains(information.getName())){
+            if(information.getVersionURL() != null && !errorMirror.contains(information.getName())){
                 String url = MojangMirror.getVersion(information, MojangMirror.parseVersion(URI.create(offcialURL))).toString();
                 if(errorURL.contains(url)) continue;
                 return url;
@@ -39,7 +39,7 @@ public class MojangClient {
      */
     public String getAssets(String hash){
         for(MirrorInformation information : list){
-            if(information.getAssetsURL() != null && errorMirror.contains(information.getName())){
+            if(information.getAssetsURL() != null && !errorMirror.contains(information.getName())){
                 String url = MojangMirror.getAsset(information, hash).toString();
                 if(errorURL.contains(url)) continue;
                 return url;
@@ -55,7 +55,7 @@ public class MojangClient {
      */
     public String getLibraries(String offcialURL){
         for(MirrorInformation information : list){
-            if(information.getLibrariesURL() != null && errorMirror.contains(information.getName())){
+            if(information.getLibrariesURL() != null && !errorMirror.contains(information.getName())){
                 String url = MojangMirror.getLibrary(information, MojangMirror.parseLibrary(URI.create(offcialURL))).toString();
                 if(errorURL.contains(url)) continue;
                 return url;
