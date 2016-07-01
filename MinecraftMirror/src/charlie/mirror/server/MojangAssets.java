@@ -36,12 +36,13 @@ public class MojangAssets implements Runnable {
         try{
             URL indexURL = new URL(verJson.getJSONObject("assetIndex").getString("url"));
             MemoryDownloadTask indexTask = new MemoryDownloadTask(indexURL, "ma");
-            FutureTask indexFuture = new FutureTask<>(indexTask);
             jsonQueue.put(indexURL, indexTask);
-            downloadPool.submit(indexFuture);
-            while(!indexFuture.isDone()) ;
+            String index = indexTask.call();
+            if(indexTask.getStatus() == MemoryDownloadTask.Status.ERROR){
+                return;
+            }
 
-            JSONObject objectsObj = new JSONObject((String) indexFuture.get()).getJSONObject("objects");
+            JSONObject objectsObj = new JSONObject(index).getJSONObject("objects");
             Set<String> objectsNameSet = objectsObj.keySet();
             for (String objectName : objectsNameSet) {
                 JSONObject objectObj = objectsObj.getJSONObject(objectName);

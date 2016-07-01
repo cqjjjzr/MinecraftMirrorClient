@@ -8,30 +8,25 @@ import java.net.URI;
 import java.net.URISyntaxException;
 import java.net.URL;
 import java.nio.file.Paths;
-import java.util.concurrent.FutureTask;
 
 import static charlie.mirror.server.MinecraftMirror.*;
 
 public class MojangVersion implements Runnable {
     private MemoryDownloadTask task;
-    private FutureTask thread;
 
     private static final URI VERSION_ROOT = URI.create("https://launcher.mojang.com/mc/game/");
     private static final URI LIBRARIES_ROOT = URI.create("https://libraries.minecraft.net/");
 
-    public MojangVersion(MemoryDownloadTask task, FutureTask thread){
+    public MojangVersion(MemoryDownloadTask task){
         this.task = task;
-        this.thread = thread;
     }
 
     @Override
     public void run() {
-        while(!thread.isDone()){
-            if(task.getStatus() == MemoryDownloadTask.Status.ERROR) return;
-        }
-
         try{
-            JSONObject rootObj = new JSONObject((String) thread.get());
+            String json = task.call();
+            if(task.getStatus() == MemoryDownloadTask.Status.ERROR) return;
+            JSONObject rootObj = new JSONObject(json);
             JSONArray librariesArr = rootObj.getJSONArray("libraries");
             for (int i = 0; i < librariesArr.length(); i++) {
                 JSONObject downloadsObj = librariesArr.getJSONObject(i).getJSONObject("downloads");

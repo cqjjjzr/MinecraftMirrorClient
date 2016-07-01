@@ -37,15 +37,11 @@ public class Checker implements Runnable {
                         switch (task.getTag()){
                             case "mv":
                                 jsonQueue.put(task.getUrl(), task);
-                                FutureTask thread = new FutureTask<>(task);
-                                MinecraftMirror.downloadPool.submit(thread);
-                                MinecraftMirror.downloadPool.submit(thread);
-                                MinecraftMirror.processPool.submit(new MojangVersion(task, thread));
+                                MinecraftMirror.processPool.submit(new MojangVersion(task));
                                 MinecraftMirror.logger.info("Retry task " + task.getUrl().toString());
                                 break;
                             case "ma":
                                 jsonQueue.put(task.getUrl(), task);
-                                MinecraftMirror.downloadPool.submit(task);
                                 MinecraftMirror.processPool.submit(new MojangAssets(task.getUrl()));
                                 MinecraftMirror.logger.info("Retry task " + task.getUrl().toString());
                             default:
