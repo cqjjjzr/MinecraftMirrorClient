@@ -17,6 +17,7 @@ public class MCMirrorExample {
     private JButton btnVersion;
     private JButton btnLibrary;
     private JButton btnAssets;
+    private JScrollPane scpList;
 
     private MirrorList list = new MirrorList();
     private MojangClient client = new MojangClient(list);
