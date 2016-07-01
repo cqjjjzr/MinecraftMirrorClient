@@ -8,6 +8,7 @@ import java.io.IOException;
 import java.net.URI;
 import java.net.URISyntaxException;
 import java.net.URL;
+import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.concurrent.FutureTask;
@@ -16,7 +17,7 @@ import static charlie.mirror.server.MinecraftMirror.*;
 
 public class MojangVersion implements Runnable {
     private DownloadTask task;
-    private FutureTask<Void> thread;
+    private FutureTask thread;
 
     private static final URI VERSION_ROOT = URI.create("https://launcher.mojang.com/mc/game/");
     private static final URI LIBRARIES_ROOT = URI.create("https://libraries.minecraft.net/");
@@ -33,7 +34,7 @@ public class MojangVersion implements Runnable {
         }
 
         try{
-            JSONObject rootObj = new JSONObject(readAll(task.getPath().toPath()));
+            JSONObject rootObj = new JSONObject(new String(Files.readAllBytes(task.getPath().toPath())));
             JSONArray librariesArr = rootObj.getJSONArray("libraries");
             for (int i = 0; i < librariesArr.length(); i++) {
                 JSONObject downloadsObj = librariesArr.getJSONObject(i).getJSONObject("downloads");
@@ -41,40 +42,48 @@ public class MojangVersion implements Runnable {
                     JSONObject classifiersObj = downloadsObj.getJSONObject("classifiers");
                     boolean flag = true;
                     if(classifiersObj.toString().contains("natives-windows-32")){
-                        startLibTask(classifiersObj.getJSONObject("natives-windows-32").getString("url"));
+                        JSONObject libObj = classifiersObj.getJSONObject("natives-windows-32");
+                        startLibTask(libObj.getString("url"), libObj.getString("sha1"), libObj.getInt("size"));
                         flag = false;
                     }
                     if(classifiersObj.toString().contains("natives-windows-64")){
-                        startLibTask(classifiersObj.getJSONObject("natives-windows-64").getString("url"));
+                        JSONObject libObj = classifiersObj.getJSONObject("natives-windows-64");
+                        startLibTask(libObj.getString("url"), libObj.getString("sha1"), libObj.getInt("size"));
                         flag = false;
                     }
                     if (classifiersObj.toString().contains("natives-linux")) {
-                        startLibTask(classifiersObj.getJSONObject("natives-linux").getString("url"));
+                        JSONObject libObj = classifiersObj.getJSONObject("natives-linux");
+                        startLibTask(libObj.getString("url"), libObj.getString("sha1"), libObj.getInt("size"));
                     }
                     if (classifiersObj.toString().contains("natives-windows") && flag) {
-                        startLibTask(classifiersObj.getJSONObject("natives-windows").getString("url"));
+                        JSONObject libObj = classifiersObj.getJSONObject("natives-windows");
+                        startLibTask(libObj.getString("url"), libObj.getString("sha1"), libObj.getInt("size"));
                     }
                     if (classifiersObj.toString().contains("natives-osx")) {
-                        startLibTask(classifiersObj.getJSONObject("natives-osx").getString("url"));
+                        JSONObject libObj = classifiersObj.getJSONObject("natives-osx");
+                        startLibTask(libObj.getString("url"), libObj.getString("sha1"), libObj.getInt("size"));
                     }
                 }
                 if (downloadsObj.toString().contains("artifact")) {
                     {
                         JSONObject artifactObj = downloadsObj.getJSONObject("artifact");
-                        startLibTask(artifactObj.getString("url"));
+                        startLibTask(artifactObj.getString("url"), artifactObj.getString("sha1"), artifactObj.getInt("size"));
                     }
                 }
             }
 
             JSONObject downloadsObj  = rootObj.getJSONObject("downloads");
             if (downloadsObj.toString().contains("client")) {
-                startVerTask(downloadsObj.getJSONObject("client").getString("url"));
+                JSONObject verObj = downloadsObj.getJSONObject("client");
+                startVerTask(verObj.getString("url"), verObj.getString("sha1"), verObj.getInt("size"));
             }
             if (downloadsObj.toString().contains("server")) {
-                startVerTask(downloadsObj.getJSONObject("server").getString("url"));
+                JSONObject verObj = downloadsObj.getJSONObject("server");
+                startVerTask(verObj.getString("url"), verObj.getString("sha1"), verObj.getInt("size"));
             }
             if (downloadsObj.toString().contains("windows-server")) {
-                startVerTask(downloadsObj.getJSONObject("windows-server").getString("url"));
+                JSONObject verObj = downloadsObj.getJSONObject("windows-server");
+                startVerTask(verObj.getString("url"), verObj.getString("sha1"), verObj.getInt("size"));
             }
 
             MojangAssets mojangAssets = new MojangAssets(rootObj);
@@ -85,29 +94,21 @@ public class MojangVersion implements Runnable {
         }
     }
 
-    private void startLibTask(String u) throws IOException, URISyntaxException {
+    private void startLibTask(String u, String hash, int length) throws IOException, URISyntaxException {
         URL url = new URL(u);
         if(!queue.containsKey(url)){
-            DownloadTask task = new DownloadTask(url, Paths.get(configManager.getHttpRoot(), "mc", "libraries", LIBRARIES_ROOT.relativize(url.toURI()).toString()).toFile(), "lib");
+            DownloadTask task = new DownloadTask(url, Paths.get(configManager.getHttpRoot(), "mc", "libraries", LIBRARIES_ROOT.relativize(url.toURI()).toString()).toFile(), "lib", hash, length);
             queue.put(url, task);
             downloadPool.submit(task);
         }
     }
 
-    private void startVerTask(String u) throws IOException, URISyntaxException {
+    private void startVerTask(String u, String hash, int length) throws IOException, URISyntaxException {
         URL url = new URL(u);
         if(!queue.containsKey(url)){
-            DownloadTask task = new DownloadTask(url, Paths.get(configManager.getHttpRoot(), "mc", "game", VERSION_ROOT.relativize(url.toURI()).toString()).toFile(), "ver");
+            DownloadTask task = new DownloadTask(url, Paths.get(configManager.getHttpRoot(), "mc", "game", VERSION_ROOT.relativize(url.toURI()).toString()).toFile(), "ver", hash, length);
             queue.put(url, task);
             downloadPool.submit(task);
         }
-    }
-
-    private String readAll(Path path) throws IOException {
-        FileInputStream fileInputStream = new FileInputStream(path.toFile());
-        byte[] buf = new byte[fileInputStream.available()];
-        fileInputStream.read(buf);
-        fileInputStream.close();
-        return new String(buf);
     }
 }

@@ -3,7 +3,7 @@ package charlie.mirror.server;
 import java.util.prefs.Preferences;
 
 public class ConfigManager {
-    Preferences preferences;
+    private Preferences preferences;
     public void init(){
         preferences = Preferences.userNodeForPackage(this.getClass());
     }

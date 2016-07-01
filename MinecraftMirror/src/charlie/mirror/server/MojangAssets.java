@@ -6,6 +6,7 @@ import java.io.FileInputStream;
 import java.io.IOException;
 import java.net.URI;
 import java.net.URL;
+import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.Set;
@@ -40,14 +41,14 @@ public class MojangAssets implements Runnable {
             downloadPool.submit(indexFuture);
             while(!indexFuture.isDone()) ;
 
-            JSONObject objectsObj = new JSONObject(readAll(Paths.get(configManager.getHttpRoot(), "intlfile", "indexes", verJson.getString("assets") + ".json"))).getJSONObject("objects");
+            JSONObject objectsObj = new JSONObject(new String(Files.readAllBytes(Paths.get(configManager.getHttpRoot(), "intlfile", "indexes", verJson.getString("assets") + ".json")))).getJSONObject("objects");
             Set<String> objectsNameSet = objectsObj.keySet();
             for (String objectName : objectsNameSet) {
                 JSONObject objectObj = objectsObj.getJSONObject(objectName);
                 String hash = objectObj.getString("hash");
                 URL objectURL = ASSETS_ROOT.resolve(hash.substring(0, 2) + "/").resolve(hash).toURL();
                 if(!queue.containsKey(objectURL)){
-                    DownloadTask objectTask = new DownloadTask(objectURL, Paths.get(configManager.getHttpRoot(), "mc", "objects", hash.substring(0, 2), hash).toFile(), "asset");
+                    DownloadTask objectTask = new DownloadTask(objectURL, Paths.get(configManager.getHttpRoot(), "mc", "objects", hash.substring(0, 2), hash).toFile(), "asset", hash, objectObj.getInt("size"));
                     queue.put(objectURL, objectTask);
                     downloadPool.submit(objectTask);
                 }
@@ -55,13 +56,5 @@ public class MojangAssets implements Runnable {
         }catch (Exception e){
             MinecraftMirror.logger.warning("Mojang assets precess exception:" + e.getClass().toString()  + " " + e.getMessage());
         }
-    }
-
-    private String readAll(Path path) throws IOException {
-        FileInputStream fileInputStream = new FileInputStream(path.toFile());
-        byte[] buf = new byte[fileInputStream.available()];
-        fileInputStream.read(buf);
-        fileInputStream.close();
-        return new String(buf);
     }
 }

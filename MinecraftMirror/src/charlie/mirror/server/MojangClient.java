@@ -6,6 +6,7 @@ import org.json.JSONObject;
 import java.io.FileInputStream;
 import java.io.IOException;
 import java.net.URL;
+import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.concurrent.FutureTask;
@@ -24,7 +25,7 @@ public class MojangClient {
                 MinecraftMirror.logger.warning("Update failed: Couldn't download version manifest:" + versionManifest.getMessage());
                 return;
             }
-            JSONArray versions = new JSONObject(readAll(Paths.get(MinecraftMirror.configManager.getHttpRoot(), "intlfile", "version_manifest.json"))).getJSONArray("versions");
+            JSONArray versions = new JSONObject(new String(Files.readAllBytes(Paths.get(MinecraftMirror.configManager.getHttpRoot(), "intlfile", "version_manifest.json")))).getJSONArray("versions");
             for (int i = 0; i < versions.length(); i++) {
                 JSONObject obj = versions.getJSONObject(i);
                 URL url = new URL(obj.getString("url"));
@@ -40,13 +41,5 @@ public class MojangClient {
             MinecraftMirror.logger.warning("Mojang updating exception:" + e.getClass().toString()  + " " + e.getMessage());
             //e.printStackTrace();
         }
-    }
-
-    private String readAll(Path path) throws IOException {
-        FileInputStream fileInputStream = new FileInputStream(path.toFile());
-        byte[] buf = new byte[fileInputStream.available()];
-        fileInputStream.read(buf);
-        fileInputStream.close();
-        return new String(buf);
     }
 }
