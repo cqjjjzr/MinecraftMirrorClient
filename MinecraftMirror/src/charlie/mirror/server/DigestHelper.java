@@ -1,18 +1,23 @@
 package charlie.mirror.server;
 
-import java.io.*;
-import java.nio.file.Files;
+import org.apache.commons.io.FileUtils;
+
+import java.io.File;
+import java.io.IOException;
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
 
 public class DigestHelper {
     public static String sha1(File file, long length) throws IOException, NoSuchAlgorithmException {
-        if(Files.size(file.toPath()) != length){
+        if(FileUtils.sizeOf(file) != length){
             return "";
         }
-        byte[] fc = Files.readAllBytes(file.toPath());
+        return sha1(FileUtils.readFileToByteArray(file));
+    }
+
+    public static String sha1(byte[] content) throws NoSuchAlgorithmException {
         MessageDigest digest = java.security.MessageDigest.getInstance("SHA-1");
-        digest.update(fc);
+        digest.update(content);
         byte messageDigest[] = digest.digest();
         StringBuilder hexString = new StringBuilder();
         for (byte aMessageDigest : messageDigest) {

@@ -20,9 +20,6 @@ public class GUI {
     public boolean status = false;
 
     public GUI() {
-        MojangInv mojangInv = new MojangInv(new MojangClient());
-        MinecraftMirror.processPool.execute(mojangInv);
-
         //tblTasks.setModel(new QueueModel());
         columnName.addAll(Arrays.asList("URL", "Path", "Status", "Message"));
         tblTasks.setModel(new DefaultTableModel(rootVector, columnName));
@@ -41,24 +38,6 @@ public class GUI {
         jFrame.setBounds(50, 50, 500, 400);
         jFrame.setDefaultCloseOperation(WindowConstants.EXIT_ON_CLOSE);
         jFrame.setVisible(true);
-    }
-
-    private class MojangInv implements Runnable {
-        private MojangClient client;
-
-        public MojangInv(MojangClient client){
-            this.client = client;
-        }
-
-        @Override
-        public void run() {
-            while(true){
-                client.update();
-                try {
-                    Thread.sleep(MinecraftMirror.configManager.getIntervalHour() * 1000 * 60 * 60);
-                } catch (InterruptedException ignored) {}
-            }
-        }
     }
 
     private class TableUpdater implements Runnable {

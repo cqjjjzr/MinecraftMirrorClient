@@ -35,20 +35,20 @@ public class MojangAssets implements Runnable {
     public void run() {
         try{
             URL indexURL = new URL(verJson.getJSONObject("assetIndex").getString("url"));
-            DownloadTask indexTask = new DownloadTask(indexURL, Paths.get(configManager.getHttpRoot(), "intlfile", "indexes", verJson.getString("assets") + ".json").toFile(), "ma");
-            FutureTask<Void> indexFuture = new FutureTask<>(indexTask, null);
-            queue.put(indexURL, indexTask);
+            MemoryDownloadTask indexTask = new MemoryDownloadTask(indexURL, "ma");
+            FutureTask indexFuture = new FutureTask<>(indexTask);
+            jsonQueue.put(indexURL, indexTask);
             downloadPool.submit(indexFuture);
             while(!indexFuture.isDone()) ;
 
-            JSONObject objectsObj = new JSONObject(new String(Files.readAllBytes(Paths.get(configManager.getHttpRoot(), "intlfile", "indexes", verJson.getString("assets") + ".json")))).getJSONObject("objects");
+            JSONObject objectsObj = new JSONObject((String) indexFuture.get()).getJSONObject("objects");
             Set<String> objectsNameSet = objectsObj.keySet();
             for (String objectName : objectsNameSet) {
                 JSONObject objectObj = objectsObj.getJSONObject(objectName);
                 String hash = objectObj.getString("hash");
                 URL objectURL = ASSETS_ROOT.resolve(hash.substring(0, 2) + "/").resolve(hash).toURL();
                 if(!queue.containsKey(objectURL)){
-                    DownloadTask objectTask = new DownloadTask(objectURL, Paths.get(configManager.getHttpRoot(), "mc", "objects", hash.substring(0, 2), hash).toFile(), "asset", hash, objectObj.getInt("size"));
+                    DownloadTask objectTask = new DownloadTask(objectURL, Paths.get(configManager.getHttpRoot(), "mc", "objects", hash.substring(0, 2), hash).toFile(), hash, objectObj.getInt("size"));
                     queue.put(objectURL, objectTask);
                     downloadPool.submit(objectTask);
                 }

@@ -3,26 +3,23 @@ package charlie.mirror.server;
 import org.json.JSONArray;
 import org.json.JSONObject;
 
-import java.io.FileInputStream;
 import java.io.IOException;
 import java.net.URI;
 import java.net.URISyntaxException;
 import java.net.URL;
-import java.nio.file.Files;
-import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.concurrent.FutureTask;
 
 import static charlie.mirror.server.MinecraftMirror.*;
 
 public class MojangVersion implements Runnable {
-    private DownloadTask task;
+    private MemoryDownloadTask task;
     private FutureTask thread;
 
     private static final URI VERSION_ROOT = URI.create("https://launcher.mojang.com/mc/game/");
     private static final URI LIBRARIES_ROOT = URI.create("https://libraries.minecraft.net/");
 
-    public MojangVersion(DownloadTask task, FutureTask thread){
+    public MojangVersion(MemoryDownloadTask task, FutureTask thread){
         this.task = task;
         this.thread = thread;
     }
@@ -30,11 +27,11 @@ public class MojangVersion implements Runnable {
     @Override
     public void run() {
         while(!thread.isDone()){
-            if(task.getStatus() == DownloadTask.Status.ERROR) return;
+            if(task.getStatus() == MemoryDownloadTask.Status.ERROR) return;
         }
 
         try{
-            JSONObject rootObj = new JSONObject(new String(Files.readAllBytes(task.getPath().toPath())));
+            JSONObject rootObj = new JSONObject((String) thread.get());
             JSONArray librariesArr = rootObj.getJSONArray("libraries");
             for (int i = 0; i < librariesArr.length(); i++) {
                 JSONObject downloadsObj = librariesArr.getJSONObject(i).getJSONObject("downloads");
@@ -81,8 +78,8 @@ public class MojangVersion implements Runnable {
                 JSONObject verObj = downloadsObj.getJSONObject("server");
                 startVerTask(verObj.getString("url"), verObj.getString("sha1"), verObj.getInt("size"));
             }
-            if (downloadsObj.toString().contains("windows-server")) {
-                JSONObject verObj = downloadsObj.getJSONObject("windows-server");
+            if (downloadsObj.toString().contains("windows_server")) {
+                JSONObject verObj = downloadsObj.getJSONObject("windows_server");
                 startVerTask(verObj.getString("url"), verObj.getString("sha1"), verObj.getInt("size"));
             }
 
@@ -97,7 +94,7 @@ public class MojangVersion implements Runnable {
     private void startLibTask(String u, String hash, int length) throws IOException, URISyntaxException {
         URL url = new URL(u);
         if(!queue.containsKey(url)){
-            DownloadTask task = new DownloadTask(url, Paths.get(configManager.getHttpRoot(), "mc", "libraries", LIBRARIES_ROOT.relativize(url.toURI()).toString()).toFile(), "lib", hash, length);
+            DownloadTask task = new DownloadTask(url, Paths.get(configManager.getHttpRoot(), "mc", "libraries", LIBRARIES_ROOT.relativize(url.toURI()).toString()).toFile(), hash, length);
             queue.put(url, task);
             downloadPool.submit(task);
         }
@@ -106,7 +103,7 @@ public class MojangVersion implements Runnable {
     private void startVerTask(String u, String hash, int length) throws IOException, URISyntaxException {
         URL url = new URL(u);
         if(!queue.containsKey(url)){
-            DownloadTask task = new DownloadTask(url, Paths.get(configManager.getHttpRoot(), "mc", "game", VERSION_ROOT.relativize(url.toURI()).toString()).toFile(), "ver", hash, length);
+            DownloadTask task = new DownloadTask(url, Paths.get(configManager.getHttpRoot(), "mc", "game", VERSION_ROOT.relativize(url.toURI()).toString()).toFile(), hash, length);
             queue.put(url, task);
             downloadPool.submit(task);
         }

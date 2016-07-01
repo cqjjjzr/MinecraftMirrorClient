@@ -5,6 +5,7 @@ import java.util.Iterator;
 import java.util.Map;
 import java.util.concurrent.FutureTask;
 
+import static charlie.mirror.server.MinecraftMirror.jsonQueue;
 import static charlie.mirror.server.MinecraftMirror.queue;
 
 public class Checker implements Runnable {
@@ -18,28 +19,44 @@ public class Checker implements Runnable {
                     DownloadTask task = iterator.next().getValue();
                     if(task.getStatus() == DownloadTask.Status.ERROR){
                         iterator.remove();
+                        queue.put(task.getUrl(), task);
+                        MinecraftMirror.downloadPool.submit(task);
+                        MinecraftMirror.logger.info("Retry task " + task.getUrl().toString());
+                    }
+                    if(task.getStatus() == DownloadTask.Status.COMPLETED){
+                        iterator.remove();
+                        //continue outside;
+                    }
+                }
+
+                Iterator<Map.Entry<URL, MemoryDownloadTask>> jIterator = jsonQueue.entrySet().iterator();
+                while(jIterator.hasNext()){
+                    MemoryDownloadTask task = jIterator.next().getValue();
+                    if(task.getStatus() == MemoryDownloadTask.Status.ERROR){
+                        iterator.remove();
                         switch (task.getTag()){
                             case "mv":
-                                queue.put(task.getUrl(), task);
-                                FutureTask<Void> thread = new FutureTask<>(task, null);
+                                jsonQueue.put(task.getUrl(), task);
+                                FutureTask thread = new FutureTask<>(task);
+                                MinecraftMirror.downloadPool.submit(thread);
                                 MinecraftMirror.downloadPool.submit(thread);
                                 MinecraftMirror.processPool.submit(new MojangVersion(task, thread));
                                 MinecraftMirror.logger.info("Retry task " + task.getUrl().toString());
                                 break;
                             case "ma":
-                                queue.put(task.getUrl(), task);
+                                jsonQueue.put(task.getUrl(), task);
                                 MinecraftMirror.downloadPool.submit(task);
                                 MinecraftMirror.processPool.submit(new MojangAssets(task.getUrl()));
                                 MinecraftMirror.logger.info("Retry task " + task.getUrl().toString());
                             default:
-                                queue.put(task.getUrl(), task);
+                                jsonQueue.put(task.getUrl(), task);
                                 MinecraftMirror.downloadPool.submit(task);
                                 MinecraftMirror.logger.info("Retry task " + task.getUrl().toString());
                         }
-                    }
-                    if(task.getStatus() == DownloadTask.Status.COMPLETED || task.getStatus() == DownloadTask.Status.ERROR){
-                        iterator.remove();
-                        //continue outside;
+                        if(task.getStatus() == MemoryDownloadTask.Status.COMPLETED){
+                            iterator.remove();
+                            //continue outside;
+                        }
                     }
                 }
             } catch (Exception e) {
