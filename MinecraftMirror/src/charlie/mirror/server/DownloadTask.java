@@ -1,17 +1,17 @@
 package charlie.mirror.server;
 
-import com.oracle.util.Checksums;
 import org.apache.commons.io.FileUtils;
 
-import java.io.*;
+import java.io.ByteArrayOutputStream;
+import java.io.File;
+import java.io.InputStream;
+import java.io.Serializable;
 import java.net.HttpURLConnection;
 import java.net.URL;
-import java.nio.file.CopyOption;
-import java.nio.file.Files;
-import java.nio.file.StandardCopyOption;
-import java.util.Objects;
 
-public class DownloadTask implements Runnable{
+public class DownloadTask implements Runnable, Serializable {
+    private static long serialVersionUID = 1L;
+
     private URL url;
     private Status status;
     private String message;

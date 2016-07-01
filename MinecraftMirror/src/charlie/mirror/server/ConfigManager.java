@@ -31,4 +31,12 @@ public class ConfigManager {
     public int getIntervalHour(){
         return preferences.getInt("IntervalHour", 1);
     }
+
+    public int getRemoteNamingPort(){
+        return preferences.getInt("RemoteNamingPort", 20100);
+    }
+
+    public int getRemoteDataPort(){
+        return preferences.getInt("RemoteDataPort", 20200);
+    }
 }

@@ -1,7 +1,10 @@
 package charlie.mirror.server;
 
+import charlie.mirror.server.remote.RemoteServer;
+
 import java.awt.*;
 import java.net.URL;
+import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
@@ -10,8 +13,8 @@ import java.util.logging.Logger;
 public class MinecraftMirror {
     public final static int VERSION = 1;
 
-    protected static ConfigManager configManager;
-    protected static Logger logger;
+    public static ConfigManager configManager;
+    public static Logger logger;
     protected static ExecutorService downloadPool;
     protected static ExecutorService processPool;
     protected static ConcurrentHashMap<URL, DownloadTask> queue = new ConcurrentHashMap<>();
@@ -31,6 +34,7 @@ public class MinecraftMirror {
             processPool.execute(mojangInv);
         }
         processPool.execute(new Checker());
+        RemoteServer.init();
     }
 
     public static class MojangInv implements Runnable {
@@ -49,5 +53,9 @@ public class MinecraftMirror {
                 } catch (InterruptedException ignored) {}
             }
         }
+    }
+
+    public static Map<URL, DownloadTask> getQueue() {
+        return queue;
     }
 }
