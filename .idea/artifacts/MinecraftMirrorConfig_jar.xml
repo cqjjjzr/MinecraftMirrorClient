@@ -1,0 +1,11 @@
+<component name="ArtifactManager">
+  <artifact type="jar" name="MinecraftMirrorConfig:jar">
+    <output-path>$PROJECT_DIR$/out/artifacts/MinecraftMirrorConfig_jar</output-path>
+    <root id="archive" name="MinecraftMirrorConfig.jar">
+      <element id="module-output" name="MinecraftMirrorConfig" />
+      <element id="module-output" name="MinecraftMirror" />
+      <element id="extracted-dir" path="E:/org.json/json-20160212.jar" path-in-jar="/" />
+      <element id="extracted-dir" path="D:/apache-lib/commons-io-2.5-bin/commons-io-2.5/commons-io-2.5.jar" path-in-jar="/" />
+    </root>
+  </artifact>
+</component>

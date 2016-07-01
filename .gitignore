@@ -4,9 +4,22 @@
 .mtj.tmp/
 
 # Package Files #
-*.jar
+#*.jar
 *.war
 *.ear
 
 # virtual machine crash logs, see http://www.java.com/en/download/help/error_hotspot.xml
 hs_err_pid*
+.idea/.name
+.idea/artifacts/MinecraftMirror_jar.xml
+.idea/codeStyleSettings.xml
+.idea/compiler.xml
+.idea/copyright/
+.idea/dictionaries/
+.idea/libraries/
+.idea/misc.xml
+.idea/modules.xml
+.idea/uiDesigner.xml
+.idea/workspace.xml
+MinecraftMirror/src/META-INF/
+#out/
