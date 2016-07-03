@@ -75,7 +75,7 @@ public class DownloadTask implements Runnable, Serializable {
         } catch (Exception e) {
             status = DownloadTask.Status.ERROR;
              MinecraftMirror.logger.warning("Downloading exception:" + e.getClass().toString() + " " + e.getMessage());
-            e.printStackTrace();
+            //e.printStackTrace();
             this.message = "Error:" + e.toString();
         }
     }

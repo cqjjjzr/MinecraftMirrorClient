@@ -1,0 +1,10 @@
+<component name="ArtifactManager">
+  <artifact type="jar" name="MinecraftMirrorClientExample:jar">
+    <output-path>$PROJECT_DIR$/out/artifacts/MinecraftMirrorClientExample_jar</output-path>
+    <root id="archive" name="MinecraftMirrorClientExample.jar">
+      <element id="module-output" name="MinecraftMirrorClientExample" />
+      <element id="module-output" name="MinecraftMirrorClient" />
+      <element id="extracted-dir" path="E:/org.json/json-20160212.jar" path-in-jar="/" />
+    </root>
+  </artifact>
+</component>

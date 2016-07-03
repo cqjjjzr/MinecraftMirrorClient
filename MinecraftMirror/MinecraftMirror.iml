@@ -7,7 +7,7 @@
     </content>
     <orderEntry type="inheritedJdk" />
     <orderEntry type="sourceFolder" forTests="false" />
-    <orderEntry type="library" exported="" name="JSON" level="project" />
+    <orderEntry type="library" name="JSON" level="project" />
     <orderEntry type="module-library" exported="">
       <library>
         <CLASSES>
@@ -17,5 +17,6 @@
         <SOURCES />
       </library>
     </orderEntry>
+    <orderEntry type="library" name="org.to2mbn:jmccc-mcdownloader:2.5-beta-1" level="project" />
   </component>
 </module>

@@ -2,15 +2,10 @@ package charlie.mirror.server;
 
 import org.json.JSONObject;
 
-import java.io.FileInputStream;
-import java.io.IOException;
 import java.net.URI;
 import java.net.URL;
-import java.nio.file.Files;
-import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.Set;
-import java.util.concurrent.FutureTask;
 
 import static charlie.mirror.server.MinecraftMirror.*;
 

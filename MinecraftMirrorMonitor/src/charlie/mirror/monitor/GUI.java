@@ -2,7 +2,6 @@ package charlie.mirror.monitor;
 
 import charlie.mirror.server.DownloadTask;
 import charlie.mirror.server.MinecraftMirror;
-import charlie.mirror.server.MojangClient;
 import charlie.mirror.server.remote.RemoteFetcher;
 
 import javax.swing.*;
@@ -15,7 +14,6 @@ import java.rmi.RemoteException;
 import java.util.Arrays;
 import java.util.Map;
 import java.util.Vector;
-import java.util.concurrent.Exchanger;
 
 public class GUI {
     public JTable tblTasks;
