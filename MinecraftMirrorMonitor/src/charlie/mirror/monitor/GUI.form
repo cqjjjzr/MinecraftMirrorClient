@@ -18,6 +18,12 @@
           </component>
         </children>
       </scrollpane>
+      <component id="35858" class="javax.swing.JLabel" binding="lblProgress">
+        <constraints border-constraint="South"/>
+        <properties>
+          <text value=""/>
+        </properties>
+      </component>
     </children>
   </grid>
 </form>

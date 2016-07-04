@@ -57,7 +57,7 @@ public class ForgeClient {
             String filename = endpointRoot.toString() + "-" + file.getString(1) + "." + file.getString(0);
             String sha1 = file.getString(2);
             URI full = pathEP1.resolve(filename);
-            DownloadTask task = new DownloadTask(full.toURL(), Paths.get(configManager.getHttpRoot(), "forge", endpoint1.toString(), filename).toFile(), sha1, -1, DigestHelper.Digest.MD5);
+            DownloadTask task = new DownloadTask(full.toURL(), Paths.get(configManager.getHttpRoot(), "forge", endpoint1.toString(), filename).toFile(), sha1, -1, DigestHelper.Digest.MD5, 0);
             MinecraftMirror.downloadPool.execute(task);
             MinecraftMirror.queue.put(full.toURL(), task);
             MinecraftMirror.fullSize += 1;

@@ -10,7 +10,7 @@ import java.security.NoSuchAlgorithmException;
 public class DigestHelper {
     public static String sha1(File file, long length) throws IOException, NoSuchAlgorithmException {
         if(FileUtils.sizeOf(file) != length){
-            return "";
+            return "err";
         }
         return sha1(FileUtils.readFileToByteArray(file));
     }
@@ -36,7 +36,7 @@ public class DigestHelper {
 
     public static String md5(File file, long length) throws IOException, NoSuchAlgorithmException {
         if(FileUtils.sizeOf(file) != length){
-            return "";
+            return "err";
         }
         return md5(FileUtils.readFileToByteArray(file));
     }

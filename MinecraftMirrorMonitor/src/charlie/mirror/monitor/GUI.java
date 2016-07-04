@@ -18,6 +18,7 @@ import java.util.Vector;
 public class GUI {
     public JTable tblTasks;
     private JPanel pnlContents;
+    private JLabel lblProgress;
 
     public Vector<Vector<Object>> rootVector = new Vector<>();
     public Vector<String> columnName = new Vector<>();
@@ -55,8 +56,10 @@ public class GUI {
                     Thread.sleep(1000);
                 } catch (InterruptedException ignored) {}
                 Map<URL, DownloadTask> map;
+                int full;
                 try {
                     map = obj.getTasks();
+                    full = obj.getFullSize();
                 } catch (RemoteException e) {
                     continue;
                 }
@@ -74,6 +77,9 @@ public class GUI {
                         tblTasks.repaint();
                         tblTasks.updateUI();
                     } catch (Exception ignored) {}
+                    if(full > 0){
+                        lblProgress.setText("Remain:" + map.size() + "/" + full);
+                    }
                 });
             }
         }
@@ -85,7 +91,7 @@ public class GUI {
         } catch (ClassNotFoundException | UnsupportedLookAndFeelException | IllegalAccessException | InstantiationException e) {
             e.printStackTrace();
         }
-        String url = JOptionPane.showInputDialog("URL?", "rmi://127.0.0.1:20020/MinecraftMirror");
+        String url = JOptionPane.showInputDialog("URL?", "rmi://127.0.0.1:20100/MinecraftMirror");
         GUI.show(url);
     }
 }

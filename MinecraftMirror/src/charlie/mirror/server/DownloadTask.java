@@ -20,6 +20,7 @@ public class DownloadTask implements Runnable, Serializable {
     private String sha1;
     private int length = -1;
     private DigestHelper.Digest digest;
+    private int digestRetryTimes;
 
     public DownloadTask(URL url, File path){
         this.url = url;
@@ -29,7 +30,7 @@ public class DownloadTask implements Runnable, Serializable {
         this.path.getParentFile().mkdirs();
     }
 
-    public DownloadTask(URL url, File path, String sha1, int length, DigestHelper.Digest digest){
+    public DownloadTask(URL url, File path, String sha1, int length, DigestHelper.Digest digest, int digestRetryTimes){
         this.url = url;
         this.status = Status.IN_QUEUE;
         this.message = "Waiting for queue.";
@@ -49,7 +50,7 @@ public class DownloadTask implements Runnable, Serializable {
                 this.status = DownloadTask.Status.COMPLETED;
                 return;
             }
-            if(length == -1 && path.exists() && DigestHelper.md5(path).equalsIgnoreCase(sha1)){
+            if(length == -1 && path.exists() && (digest == DigestHelper.Digest.MD5 ? DigestHelper.md5(path) : DigestHelper.sha1(path)).equalsIgnoreCase(sha1)){
                 this.message = "File already existed. Download stopped.";
                 this.status = DownloadTask.Status.COMPLETED;
                 return;
@@ -59,7 +60,7 @@ public class DownloadTask implements Runnable, Serializable {
             if(fileContent != null){
                 if(sum){
                     String fsha1 = digest == DigestHelper.Digest.MD5 ? DigestHelper.md5(fileContent) : DigestHelper.sha1(fileContent);
-                    if(!fsha1.equalsIgnoreCase(sha1)){
+                    if(!sha1.isEmpty() && !fsha1.trim().equalsIgnoreCase(sha1.trim())){
                         this.message = "Error checksum. Abort.";
                         this.status = DownloadTask.Status.ERROR;
                         MinecraftMirror.logger.info("Checksum:" + sha1 +  " and " + fsha1);
@@ -137,5 +138,13 @@ public class DownloadTask implements Runnable, Serializable {
 
     public File getPath() {
         return path;
+    }
+
+    public int getDigestRetryTimes() {
+        return digestRetryTimes;
+    }
+
+    public void setDigestRetryTimes(int digestRetryTimes) {
+        this.digestRetryTimes = digestRetryTimes;
     }
 }

@@ -9,13 +9,15 @@ public class Checker implements Runnable {
     public void run() {
         outside:while(true){
             try {
-                Thread.sleep(10000);
+                Thread.sleep(1000);
                 Iterator<Map.Entry<URL, DownloadTask>> iterator = MinecraftMirror.queue.entrySet().iterator();
                 while(iterator.hasNext()){
                     DownloadTask task = iterator.next().getValue();
                     if(task.getStatus() == DownloadTask.Status.ERROR){
-                        iterator.remove();
-                        MinecraftMirror.queue.put(task.getUrl(), task);
+                        //iterator.remove();
+                        //MinecraftMirror.queue.put(task.getUrl(), task);
+                        if(task.getDigestRetryTimes() > 20) continue;
+                        task.setDigestRetryTimes(task.getDigestRetryTimes() + 1);
                         MinecraftMirror.downloadPool.submit(task);
                         MinecraftMirror.logger.info("Retry task " + task.getUrl().toString());
                     }
@@ -29,19 +31,19 @@ public class Checker implements Runnable {
                 while(jIterator.hasNext()){
                     MemoryDownloadTask task = jIterator.next().getValue();
                     if(task.getStatus() == MemoryDownloadTask.Status.ERROR){
-                        iterator.remove();
+                        //iterator.remove();
                         switch (task.getTag()){
                             case "mv":
-                                MinecraftMirror.jsonQueue.put(task.getUrl(), task);
+                                //MinecraftMirror.jsonQueue.put(task.getUrl(), task);
                                 MinecraftMirror.processPool.submit(new MojangVersion(task));
                                 MinecraftMirror.logger.info("Retry task " + task.getUrl().toString());
                                 break;
                             case "ma":
-                                MinecraftMirror.jsonQueue.put(task.getUrl(), task);
+                                //MinecraftMirror.jsonQueue.put(task.getUrl(), task);
                                 MinecraftMirror.processPool.submit(new MojangAssets(task.getUrl()));
                                 MinecraftMirror.logger.info("Retry task " + task.getUrl().toString());
                             default:
-                                MinecraftMirror.jsonQueue.put(task.getUrl(), task);
+                                //MinecraftMirror.jsonQueue.put(task.getUrl(), task);
                                 MinecraftMirror.downloadPool.submit(task);
                                 MinecraftMirror.logger.info("Retry task " + task.getUrl().toString());
                         }
