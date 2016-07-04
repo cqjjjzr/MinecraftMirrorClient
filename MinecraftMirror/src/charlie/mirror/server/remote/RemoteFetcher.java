@@ -9,4 +9,5 @@ import java.util.Map;
 
 public interface RemoteFetcher extends Remote {
     Map<URL, DownloadTask> getTasks() throws RemoteException;
+    int getFullSize() throws RemoteException;
 }

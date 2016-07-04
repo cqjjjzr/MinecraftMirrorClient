@@ -10,15 +10,14 @@ import java.rmi.registry.LocateRegistry;
 import java.rmi.server.RMISocketFactory;
 
 public class RemoteServer {
-    private static RemoteFetcher obj;
 
     public static void init(){
         try {
             System.setProperty("java.rmi.server.hostname","127.0.0.1");
             RMISocketFactory.setSocketFactory(new RMISocket());
             LocateRegistry.createRegistry(MinecraftMirror.configManager.getRemoteNamingPort());
-            obj = new RemoteFetcherImpl();
-            Naming.rebind("rmi://127.0.0.1:20100/MinecraftMirror", obj);
+            RemoteFetcher obj = new RemoteFetcherImpl();
+            Naming.rebind("rmi://127.0.0.1:" + MinecraftMirror.configManager.getRemoteNamingPort() + "/MinecraftMirror", obj);
             MinecraftMirror.logger.info("Remote running");
         } catch (IOException e) {
             e.printStackTrace();

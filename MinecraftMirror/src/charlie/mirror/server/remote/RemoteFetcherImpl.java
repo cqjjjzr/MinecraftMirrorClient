@@ -17,4 +17,9 @@ public class RemoteFetcherImpl extends UnicastRemoteObject implements RemoteFetc
     public Map<URL, DownloadTask> getTasks() throws RemoteException {
         return MinecraftMirror.getQueue();
     }
+
+    @Override
+    public int getFullSize() throws RemoteException {
+        return MinecraftMirror.fullSize;
+    }
 }

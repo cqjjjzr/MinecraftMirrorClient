@@ -17,6 +17,5 @@
         <SOURCES />
       </library>
     </orderEntry>
-    <orderEntry type="library" name="org.to2mbn:jmccc-mcdownloader:2.5-beta-1" level="project" />
   </component>
 </module>

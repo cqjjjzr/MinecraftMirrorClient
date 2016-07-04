@@ -19,6 +19,7 @@ public class DownloadTask implements Runnable, Serializable {
     private boolean sum = false;
     private String sha1;
     private int length = -1;
+    private DigestHelper.Digest digest;
 
     public DownloadTask(URL url, File path){
         this.url = url;
@@ -28,7 +29,7 @@ public class DownloadTask implements Runnable, Serializable {
         this.path.getParentFile().mkdirs();
     }
 
-    public DownloadTask(URL url, File path, String sha1, int length){
+    public DownloadTask(URL url, File path, String sha1, int length, DigestHelper.Digest digest){
         this.url = url;
         this.status = Status.IN_QUEUE;
         this.message = "Waiting for queue.";
@@ -37,12 +38,18 @@ public class DownloadTask implements Runnable, Serializable {
         this.sum = true;
         this.sha1 = sha1;
         this.length = length;
+        this.digest = digest;
     }
 
     @Override
     public void run() {
         try {
-            if(path.exists()  && length == FileUtils.sizeOf(path)){
+            if(length != -1 && path.exists() && length == FileUtils.sizeOf(path)){
+                this.message = "File already existed. Download stopped.";
+                this.status = DownloadTask.Status.COMPLETED;
+                return;
+            }
+            if(length == -1 && path.exists() && DigestHelper.md5(path).equalsIgnoreCase(sha1)){
                 this.message = "File already existed. Download stopped.";
                 this.status = DownloadTask.Status.COMPLETED;
                 return;
@@ -51,14 +58,14 @@ public class DownloadTask implements Runnable, Serializable {
             fileContent = memory();
             if(fileContent != null){
                 if(sum){
-                    String fsha1 = DigestHelper.sha1(fileContent);
+                    String fsha1 = digest == DigestHelper.Digest.MD5 ? DigestHelper.md5(fileContent) : DigestHelper.sha1(fileContent);
                     if(!fsha1.equalsIgnoreCase(sha1)){
                         this.message = "Error checksum. Abort.";
                         this.status = DownloadTask.Status.ERROR;
                         MinecraftMirror.logger.info("Checksum:" + sha1 +  " and " + fsha1);
                         return;
                     }
-                    if(fileContent.length != length){
+                    if(length != -1 && fileContent.length != length){
                         this.message = "Error file size. Abort.";
                         this.status = DownloadTask.Status.ERROR;
                         MinecraftMirror.logger.info("File size:" + length +  " and " + fileContent.length);

@@ -89,18 +89,20 @@ public class MojangVersion implements Runnable {
     private void startLibTask(String u, String hash, int length) throws IOException, URISyntaxException {
         URL url = new URL(u);
         if(!queue.containsKey(url)){
-            DownloadTask task = new DownloadTask(url, Paths.get(configManager.getHttpRoot(), "mc", "libraries", LIBRARIES_ROOT.relativize(url.toURI()).toString()).toFile(), hash, length);
+            DownloadTask task = new DownloadTask(url, Paths.get(configManager.getHttpRoot(), "mc", "libraries", LIBRARIES_ROOT.relativize(url.toURI()).toString()).toFile(), hash, length, DigestHelper.Digest.SHA1);
             queue.put(url, task);
             downloadPool.submit(task);
+            MinecraftMirror.fullSize += 1;
         }
     }
 
     private void startVerTask(String u, String hash, int length) throws IOException, URISyntaxException {
         URL url = new URL(u);
         if(!queue.containsKey(url)){
-            DownloadTask task = new DownloadTask(url, Paths.get(configManager.getHttpRoot(), "mc", "game", VERSION_ROOT.relativize(url.toURI()).toString()).toFile(), hash, length);
+            DownloadTask task = new DownloadTask(url, Paths.get(configManager.getHttpRoot(), "mc", "game", VERSION_ROOT.relativize(url.toURI()).toString()).toFile(), hash, length, DigestHelper.Digest.SHA1);
             queue.put(url, task);
             downloadPool.submit(task);
+            MinecraftMirror.fullSize += 1;
         }
     }
 }

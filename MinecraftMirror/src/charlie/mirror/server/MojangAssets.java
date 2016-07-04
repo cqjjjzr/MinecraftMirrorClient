@@ -44,9 +44,10 @@ public class MojangAssets implements Runnable {
                 String hash = objectObj.getString("hash");
                 URL objectURL = ASSETS_ROOT.resolve(hash.substring(0, 2) + "/").resolve(hash).toURL();
                 if(!queue.containsKey(objectURL)){
-                    DownloadTask objectTask = new DownloadTask(objectURL, Paths.get(configManager.getHttpRoot(), "mc", "objects", hash.substring(0, 2), hash).toFile(), hash, objectObj.getInt("size"));
+                    DownloadTask objectTask = new DownloadTask(objectURL, Paths.get(configManager.getHttpRoot(), "mc", "objects", hash.substring(0, 2), hash).toFile(), hash, objectObj.getInt("size"), DigestHelper.Digest.SHA1);
                     queue.put(objectURL, objectTask);
                     downloadPool.submit(objectTask);
+                    MinecraftMirror.fullSize += 1;
                 }
             }
         }catch (Exception e){
