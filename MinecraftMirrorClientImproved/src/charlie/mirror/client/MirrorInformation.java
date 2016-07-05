@@ -1,7 +1,5 @@
 package charlie.mirror.client;
 
-import java.net.URI;
-
 /**
  * A class to store mirror information.
  * @author Charlie Jiang
@@ -9,39 +7,39 @@ import java.net.URI;
 public class MirrorInformation {
     private String name;
 
-    private URI versionPattern = null;
-    private URI librariesPattern = null;
-    private URI assetsPattern = null;
+    private String versionPattern = null;
+    private String librariesPattern = null;
+    private String assetsPattern = null;
 
     public MirrorInformation(){}
 
-    public MirrorInformation(URI versionPattern, URI librariesPattern, URI assetsPattern){
+    public MirrorInformation(String versionPattern, String librariesPattern, String assetsPattern){
         this.versionPattern = versionPattern;
         this.librariesPattern = librariesPattern;
         this.assetsPattern = assetsPattern;
     }
 
-    public URI getAssetsPattern() {
+    public String getAssetsPattern() {
         return assetsPattern;
     }
 
-    public void setAssetsPattern(URI assetsPattern) {
+    public void setAssetsPattern(String assetsPattern) {
         this.assetsPattern = assetsPattern;
     }
 
-    public URI getVersionPattern() {
+    public String getVersionPattern() {
         return versionPattern;
     }
 
-    public void setVersionPattern(URI versionPattern) {
+    public void setVersionPattern(String versionPattern) {
         this.versionPattern = versionPattern;
     }
 
-    public URI getLibrariesPattern() {
+    public String getLibrariesPattern() {
         return librariesPattern;
     }
 
-    public void setLibrariesPattern(URI librariesPattern) {
+    public void setLibrariesPattern(String librariesPattern) {
         this.librariesPattern = librariesPattern;
     }
 

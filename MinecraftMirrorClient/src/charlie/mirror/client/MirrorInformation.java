@@ -1,7 +1,5 @@
 package charlie.mirror.client;
 
-import java.net.URI;
-
 /**
  * A class to store mirror information.
  * @author Charlie Jiang
@@ -9,40 +7,40 @@ import java.net.URI;
 public class MirrorInformation {
     private String name;
 
-    private URI versionURL = null;
-    private URI librariesURL = null;
-    private URI assetsURL = null;
+    private String versionPattern = null;
+    private String librariesPattern = null;
+    private String assetsPattern = null;
 
     public MirrorInformation(){}
 
-    public MirrorInformation(URI versionURL, URI librariesURL, URI assetsURL){
-        this.versionURL = versionURL;
-        this.librariesURL = librariesURL;
-        this.assetsURL = assetsURL;
+    public MirrorInformation(String versionPattern, String librariesPattern, String assetsPattern){
+        this.versionPattern = versionPattern;
+        this.librariesPattern = librariesPattern;
+        this.assetsPattern = assetsPattern;
     }
 
-    public URI getAssetsURL() {
-        return assetsURL;
+    public String getAssetsPattern() {
+        return assetsPattern;
     }
 
-    public void setAssetsURL(URI assetsURL) {
-        this.assetsURL = assetsURL;
+    public void setAssetsPattern(String assetsPattern) {
+        this.assetsPattern = assetsPattern;
     }
 
-    public URI getVersionURL() {
-        return versionURL;
+    public String getVersionPattern() {
+        return versionPattern;
     }
 
-    public void setVersionURL(URI versionURL) {
-        this.versionURL = versionURL;
+    public void setVersionPattern(String versionPattern) {
+        this.versionPattern = versionPattern;
     }
 
-    public URI getLibrariesURL() {
-        return librariesURL;
+    public String getLibrariesPattern() {
+        return librariesPattern;
     }
 
-    public void setLibrariesURL(URI librariesURL) {
-        this.librariesURL = librariesURL;
+    public void setLibrariesPattern(String librariesPattern) {
+        this.librariesPattern = librariesPattern;
     }
 
     public String getName() {

@@ -1,12 +1,10 @@
 package charlie.mirror.client;
 
-import java.net.URI;
-
 public class MojangInformation extends MirrorInformation {
     public MojangInformation(){
         this.setName("Mojang");
-        this.setAssetsURL(URI.create("http://resources.download.minecraft.net/"));
-        this.setLibrariesURL(URI.create("https://libraries.minecraft.net/"));
-        this.setVersionURL(URI.create("https://launcher.mojang.com/mc/game/"));
+        this.setAssetsPattern("http://resources.download.minecraft.net/{0}/{1}");
+        this.setLibrariesPattern("https://libraries.minecraft.net/{0}/{1}");
+        this.setVersionPattern("https://launcher.mojang.com/mc/game/{0}/{1}/{2}/{3}");
     }
 }
