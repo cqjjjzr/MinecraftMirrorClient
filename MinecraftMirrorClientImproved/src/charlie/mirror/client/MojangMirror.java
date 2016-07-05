@@ -50,5 +50,6 @@ public class MojangMirror {
         System.out.println(filter("http://bmclapi2.bangbang93.com/version/{0}/{1}", parseVersion(URI.create("https://launcher.mojang.com/mc/game/1.7.10/client/e80d9b3bf5085002218d4be59e668bac718abbc6/client.jar"))));
         //System.out.println(Arrays.asList(parseVersion(URI.create("https://launcher.mojang.com/mc/game/1.7.10/client/e80d9b3bf5085002218d4be59e668bac718abbc6/client.jar"))));
         System.out.println(filter("http://bmclapi2.bangbang93.com/libraries/{0}/{1}", parseLibrary(URI.create("https://libraries.minecraft.net/com/mojang/netty/1.6/netty-1.6.jar"))));
+        System.out.println(getAsset("http://bmclapi2.bangbang93.com/objects/{0}/{1}", "48f7e1bb098abd36b9760cca27b9d4391a23de26"));
     }
 }
