@@ -1,4 +1,4 @@
-package charlie.mirror.client;
+package charlie.mirror.client.improved;
 
 import org.json.JSONArray;
 import org.json.JSONObject;
@@ -30,9 +30,11 @@ public class MirrorList implements Iterable<MirrorInformation> {
         for (int i = 0; i < array.length(); i++) {
             JSONObject obj = array.getJSONObject(i);
             switch (obj.getString("name")){
-                case "versionsURL":information.setVersionPattern(obj.getString("rootURL")); break;
-                case "librariesURL":information.setLibrariesPattern(obj.getString("rootURL")); break;
-                case "assetsURL":information.setAssetsPattern(obj.getString("rootURL"));
+                case "versionsURL":information.setVersionMirrorPrefix(URI.create(obj.getString("mirrorPrefix")));
+                    information.setVersionOriginalPrefix(URI.create(obj.getString("officialPrefix"))); break;
+                case "librariesURL":information.setLibrariesMirrorPrefix(URI.create(obj.getString("mirrorPrefix")));
+                    information.setLibrariesOriginalPrefix(URI.create(obj.getString("officialPrefix"))); break;
+                case "assetsURL":information.setAssetsMirrorPrefix(URI.create(obj.getString("mirrorPrefix")));
             }
         }
         information.setName(rootObj.getString("name"));

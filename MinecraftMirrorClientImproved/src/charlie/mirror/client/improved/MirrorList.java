@@ -1,4 +1,4 @@
-package charlie.mirror.client;
+package charlie.mirror.client.improved;
 
 import org.json.JSONArray;
 import org.json.JSONObject;
