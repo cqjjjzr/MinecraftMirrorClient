@@ -25,6 +25,7 @@ public class MirrorList implements Iterable<MirrorInformation> {
      */
     public void add(String json){
         JSONObject rootObj = new JSONObject(json);
+        if(rootObj.getInt("version") != 1) throw new IllegalArgumentException("Bad version:" + rootObj.getInt("version"));
         JSONArray array = rootObj.getJSONArray("mirrors");
         MirrorInformation information = new MirrorInformation();
         for (int i = 0; i < array.length(); i++) {
