@@ -1,4 +1,4 @@
-package charlie.mirror.client.improved;
+package charlie.mirror.client.nw;
 
 import java.net.URI;
 import java.text.MessageFormat;

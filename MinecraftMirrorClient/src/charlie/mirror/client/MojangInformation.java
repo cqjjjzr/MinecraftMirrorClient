@@ -1,4 +1,4 @@
-package charlie.mirror.client.improved;
+package charlie.mirror.client;
 
 import java.net.URI;
 

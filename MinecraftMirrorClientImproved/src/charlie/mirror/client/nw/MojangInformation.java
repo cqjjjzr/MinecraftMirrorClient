@@ -1,6 +1,4 @@
-package charlie.mirror.client.improved;
-
-import java.net.URI;
+package charlie.mirror.client.nw;
 
 public class MojangInformation extends MirrorInformation {
     public MojangInformation(){

@@ -1,6 +1,5 @@
-package charlie.mirror.client.improved;
+package charlie.mirror.client;
 
-import java.net.URI;
 import java.util.LinkedList;
 import java.util.List;
 
@@ -23,8 +22,8 @@ public class MojangClient {
      */
     public String getVersion(String offcialURL){
         for(MirrorInformation information : list){
-            if(information.getVersionPattern() != null && !errorMirror.contains(information.getName())){
-                String url = MojangMirror.filter(information.getVersionPattern(), MojangMirror.parseVersion(URI.create(offcialURL)));
+            if(information.getVersionMirrorPrefix() != null && !errorMirror.contains(information.getName())){
+                String url = MojangMirror.getVersion(information, offcialURL);
                 if(errorURL.contains(url)) continue;
                 return url;
             }
@@ -39,8 +38,8 @@ public class MojangClient {
      */
     public String getAssets(String hash){
         for(MirrorInformation information : list){
-            if(information.getAssetsPattern() != null && !errorMirror.contains(information.getName())){
-                String url = MojangMirror.getAsset(information.getAssetsPattern(), hash);
+            if(information.getAssetsMirrorPrefix() != null && !errorMirror.contains(information.getName())){
+                String url = MojangMirror.getAsset(information, hash);
                 if(errorURL.contains(url)) continue;
                 return url;
             }
@@ -50,13 +49,13 @@ public class MojangClient {
 
     /**
      * Get a mirror library URL from a offcial URL.
-     * @param offcialURL The offcial URL.
+     * @param officialURL The offcial URL.
      * @return The mirror URL.
      */
-    public String getLibraries(String offcialURL){
+    public String getLibraries(String officialURL){
         for(MirrorInformation information : list){
-            if(information.getLibrariesPattern() != null && !errorMirror.contains(information.getName())){
-                String url = MojangMirror.filter(information.getLibrariesPattern(), MojangMirror.parseLibrary(URI.create(offcialURL)));
+            if(information.getLibrariesMirrorPrefix() != null && !errorMirror.contains(information.getName())){
+                String url = MojangMirror.getLibrary(information, officialURL);
                 if(errorURL.contains(url)) continue;
                 return url;
             }

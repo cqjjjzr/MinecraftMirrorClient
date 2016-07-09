@@ -27,7 +27,7 @@ public class MinecraftMirror {
         logger = Logger.getGlobal();
         downloadPool = Executors.newFixedThreadPool(configManager.getMaxQueue());
         processPool = Executors.newCachedThreadPool();
-        Inv mojangInv = new Inv(new MojangClient(), new ForgeClient());
+        Inv mojangInv = new Inv(new MojangClient(), new ForgeClient(), new LiteLoaderClient());
         processPool.execute(mojangInv);
         ForgeInv forgeInv = new ForgeInv(new ForgeClient());
         processPool.execute(forgeInv);
@@ -38,18 +38,21 @@ public class MinecraftMirror {
     public static class Inv implements Runnable {
         private MojangClient mClient;
         private ForgeClient fClient;
+        private LiteLoaderClient lClient;
 
-        public Inv(MojangClient mClient, ForgeClient fClient){
+        public Inv(MojangClient mClient, ForgeClient fClient, LiteLoaderClient lClient){
             this.fClient = fClient;
             this.mClient = mClient;
+            this.lClient = lClient;
         }
 
         @Override
         public void run() {
             while(true){
                 fullSize = 0;
-                mClient.update();
-                fClient.update();
+                //mClient.update();
+                //fClient.update();
+                lClient.update();
                 try {
                     Thread.sleep(MinecraftMirror.configManager.getIntervalHour() * 1000 * 60 * 60);
                 } catch (InterruptedException ignored) {}

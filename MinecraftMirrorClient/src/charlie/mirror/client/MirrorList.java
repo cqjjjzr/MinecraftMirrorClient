@@ -1,8 +1,9 @@
-package charlie.mirror.client.improved;
+package charlie.mirror.client;
 
 import org.json.JSONArray;
 import org.json.JSONObject;
 
+import java.net.URI;
 import java.util.Iterator;
 import java.util.LinkedList;
 import java.util.List;
@@ -24,14 +25,17 @@ public class MirrorList implements Iterable<MirrorInformation> {
      */
     public void add(String json){
         JSONObject rootObj = new JSONObject(json);
+        if(rootObj.getInt("version") != 1) throw new IllegalArgumentException("Bad version:" + rootObj.getInt("version"));
         JSONArray array = rootObj.getJSONArray("mirrors");
         MirrorInformation information = new MirrorInformation();
         for (int i = 0; i < array.length(); i++) {
             JSONObject obj = array.getJSONObject(i);
             switch (obj.getString("name")){
-                case "versionsURL":information.setVersionPattern(obj.getString("rootURL")); break;
-                case "librariesURL":information.setLibrariesPattern(obj.getString("rootURL")); break;
-                case "assetsURL":information.setAssetsPattern(obj.getString("rootURL"));
+                case "versionsURL":information.setVersionMirrorPrefix(URI.create(obj.getString("mirrorPrefix")));
+                    information.setVersionOriginalPrefix(URI.create(obj.getString("officialPrefix"))); break;
+                case "librariesURL":information.setLibrariesMirrorPrefix(URI.create(obj.getString("mirrorPrefix")));
+                    information.setLibrariesOriginalPrefix(URI.create(obj.getString("officialPrefix"))); break;
+                case "assetsURL":information.setAssetsMirrorPrefix(URI.create(obj.getString("mirrorPrefix")));
             }
         }
         information.setName(rootObj.getString("name"));

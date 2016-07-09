@@ -1,4 +1,4 @@
-package charlie.mirror.client.improved;
+package charlie.mirror.client.nw;
 
 /**
  * A class to store mirror information.

@@ -1,5 +1,5 @@
-import charlie.mirror.client.improved.MirrorList;
-import charlie.mirror.client.improved.MojangClient;
+import charlie.mirror.client.MirrorList;
+import charlie.mirror.client.MojangClient;
 
 import javax.swing.*;
 import javax.swing.event.ListDataListener;
